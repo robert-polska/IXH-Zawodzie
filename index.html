@@ -9,61 +9,59 @@
 :root{
   --bg:#ffffff;
   --card:#0f2430;
+  --panel:#162f3d;
   --btn:#cfd3d6;
   --btn-active:#3fd173;
   --text:#ffffff;
-  --muted:#b5bcc2;
+  --muted:#b8c2c8;
 }
 
 body{
   margin:0;
   background:var(--bg);
   font-family:Arial, Helvetica, sans-serif;
-  color:#000;
-  text-align:center;
 }
 
 header{
-  padding:30px;
-  text-align:left;
+  padding:30px 40px;
 }
 
 header img{
-  height:48px;
+  height:72px;
 }
 
 .card{
-  max-width:720px;
+  max-width:760px;
   margin:40px auto;
   background:var(--card);
-  border-radius:26px;
-  padding:40px 30px;
+  border-radius:28px;
+  padding:40px;
   color:var(--text);
   box-shadow:0 20px 40px rgba(0,0,0,.15);
 }
 
 .time{
-  font-size:36px;
-  margin-bottom:25px;
+  font-size:38px;
+  text-align:center;
+  margin-bottom:28px;
   letter-spacing:2px;
 }
 
 .row{
   display:flex;
   justify-content:center;
-  gap:16px;
+  gap:18px;
   flex-wrap:wrap;
 }
 
 .btn{
-  min-width:140px;
+  min-width:150px;
   padding:14px 20px;
   border-radius:16px;
   background:var(--btn);
   color:#000;
+  text-align:center;
   cursor:pointer;
-  user-select:none;
-  font-size:16px;
 }
 
 .btn.active{
@@ -72,6 +70,7 @@ header img{
 
 .section{
   margin-top:28px;
+  text-align:center;
 }
 
 .label{
@@ -81,13 +80,13 @@ header img{
 }
 
 .setpoint{
-  font-size:28px;
+  font-size:30px;
 }
 
 .setpoint button{
   font-size:22px;
   padding:6px 14px;
-  margin:0 10px;
+  margin:0 12px;
   border-radius:10px;
   border:none;
   cursor:pointer;
@@ -95,15 +94,16 @@ header img{
 
 .temps{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:14px;
-  margin-top:20px;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-top:24px;
 }
 
 .temp{
-  background:#0b1a22;
-  border-radius:14px;
-  padding:14px;
+  background:var(--panel);
+  border-radius:16px;
+  padding:16px;
+  text-align:center;
 }
 
 .temp .name{
@@ -112,22 +112,49 @@ header img{
 }
 
 .temp .val{
-  font-size:22px;
+  font-size:24px;
   margin-top:6px;
+}
+
+.temp.out{
+  margin-top:16px;
+}
+
+.pwm{
+  margin-top:26px;
+}
+
+.pwm-row{
+  margin-top:12px;
+}
+
+.bar{
+  height:10px;
+  background:#233f50;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:6px;
+}
+
+.bar span{
+  display:block;
+  height:100%;
+  background:var(--btn-active);
 }
 
 .relays{
   display:flex;
-  gap:14px;
-  margin-top:24px;
-  flex-wrap:wrap;
+  gap:16px;
   justify-content:center;
+  margin-top:32px;
+  flex-wrap:wrap;
 }
 
 footer{
+  text-align:center;
   margin:40px 0 20px;
-  font-size:14px;
   color:#555;
+  font-size:14px;
 }
 </style>
 </head>
@@ -135,7 +162,7 @@ footer{
 <body>
 
 <header>
-  <img src="logo.png" alt="IXH logo">
+  <img src="logo.png" alt="IXH">
 </header>
 
 <div class="card">
@@ -144,33 +171,54 @@ footer{
 
   <!-- MODE -->
   <div class="row">
-    <div class="btn active" id="btnAuto">AUTO</div>
-    <div class="btn" id="btnManual">MANUAL</div>
+    <div class="btn active">AUTO</div>
+    <div class="btn">MANUAL</div>
   </div>
 
   <!-- SETPOINT -->
   <div class="section">
     <div class="label">Temperatura zadana</div>
     <div class="setpoint">
-      <button onclick="adj(-0.5)">–</button>
-      <span id="tzad">21.0 °C</span>
-      <button onclick="adj(0.5)">+</button>
+      <button>–</button>
+      21.0 °C
+      <button>+</button>
     </div>
   </div>
 
-  <!-- TEMPERATURES -->
-  <div class="section temps">
-    <div class="temp"><div class="name">Nawiew</div><div class="val" id="tN">21.5 °C</div></div>
-    <div class="temp"><div class="name">Wywiew</div><div class="val" id="tW">22.1 °C</div></div>
-    <div class="temp"><div class="name">CT</div><div class="val" id="tC">31.9 °C</div></div>
-    <div class="temp"><div class="name">Zewnętrzna</div><div class="val" id="tO">4.2 °C</div></div>
+  <!-- TEMPS -->
+  <div class="temps">
+    <div class="temp"><div class="name">Nawiew</div><div class="val">21.5 °C</div></div>
+    <div class="temp"><div class="name">Wywiew</div><div class="val">22.1 °C</div></div>
+    <div class="temp"><div class="name">CT</div><div class="val">31.9 °C</div></div>
+  </div>
+
+  <div class="temp out">
+    <div class="name">Zewnętrzna</div>
+    <div class="val">4.2 °C</div>
+  </div>
+
+  <!-- PWM -->
+  <div class="pwm">
+    <div class="label">PWM</div>
+
+    <div class="pwm-row">Nawiew – 40%
+      <div class="bar"><span style="width:40%"></span></div>
+    </div>
+
+    <div class="pwm-row">Wywiew – 40%
+      <div class="bar"><span style="width:40%"></span></div>
+    </div>
+
+    <div class="pwm-row">CT – 80%
+      <div class="bar"><span style="width:80%"></span></div>
+    </div>
   </div>
 
   <!-- RELAYS -->
-  <div class="section relays">
-    <div class="btn active" id="r1">Start HV</div>
-    <div class="btn" id="r2">Start PC</div>
-    <div class="btn" id="r3">Pompa CT</div>
+  <div class="relays">
+    <div class="btn active">Start HV</div>
+    <div class="btn">Start PC</div>
+    <div class="btn">Pompa CT</div>
   </div>
 
 </div>
@@ -181,55 +229,10 @@ footer{
 </footer>
 
 <script>
-/* ===== MOCK STATE ===== */
-let state = {
-  mode:'AUTO',
-  tZad:21.0,
-  tN:21.5,
-  tW:22.1,
-  tC:31.9,
-  tO:4.2,
-  r1:true,
-  r2:false,
-  r3:false
-};
-
-/* CLOCK */
 setInterval(()=>{
-  const d=new Date();
-  clock.innerHTML=d.toLocaleTimeString('pl-PL');
+  document.getElementById("clock").innerHTML =
+    new Date().toLocaleTimeString("pl-PL");
 },1000);
-
-/* MODE */
-btnAuto.onclick=()=>setMode('AUTO');
-btnManual.onclick=()=>setMode('MANUAL');
-
-function setMode(m){
-  state.mode=m;
-  btnAuto.classList.toggle('active',m==='AUTO');
-  btnManual.classList.toggle('active',m==='MANUAL');
-}
-
-/* SETPOINT */
-function adj(v){
-  state.tZad=Math.min(30,Math.max(18,state.tZad+v));
-  render();
-}
-
-/* RENDER */
-function render(){
-  tzad.innerHTML=state.tZad.toFixed(1)+' °C';
-  tN.innerHTML=state.tN+' °C';
-  tW.innerHTML=state.tW+' °C';
-  tC.innerHTML=state.tC+' °C';
-  tO.innerHTML=state.tO+' °C';
-
-  r1.classList.toggle('active',state.r1);
-  r2.classList.toggle('active',state.r2);
-  r3.classList.toggle('active',state.r3);
-}
-
-render();
 </script>
 
 </body>
