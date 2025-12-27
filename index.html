@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IXH – Wentylacja</title>
+
+<style>
+:root{
+  --bg:#ffffff;
+  --card:#0f2430;
+  --btn:#cfd3d6;
+  --btn-active:#3fd173;
+  --text:#ffffff;
+  --muted:#b5bcc2;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  font-family:Arial, Helvetica, sans-serif;
+  color:#000;
+  text-align:center;
+}
+
+header{
+  padding:30px;
+  text-align:left;
+}
+
+header img{
+  height:48px;
+}
+
+.card{
+  max-width:720px;
+  margin:40px auto;
+  background:var(--card);
+  border-radius:26px;
+  padding:40px 30px;
+  color:var(--text);
+  box-shadow:0 20px 40px rgba(0,0,0,.15);
+}
+
+.time{
+  font-size:36px;
+  margin-bottom:25px;
+  letter-spacing:2px;
+}
+
+.row{
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  min-width:140px;
+  padding:14px 20px;
+  border-radius:16px;
+  background:var(--btn);
+  color:#000;
+  cursor:pointer;
+  user-select:none;
+  font-size:16px;
+}
+
+.btn.active{
+  background:var(--btn-active);
+}
+
+.section{
+  margin-top:28px;
+}
+
+.label{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+.setpoint{
+  font-size:28px;
+}
+
+.setpoint button{
+  font-size:22px;
+  padding:6px 14px;
+  margin:0 10px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+}
+
+.temps{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+  margin-top:20px;
+}
+
+.temp{
+  background:#0b1a22;
+  border-radius:14px;
+  padding:14px;
+}
+
+.temp .name{
+  font-size:14px;
+  color:var(--muted);
+}
+
+.temp .val{
+  font-size:22px;
+  margin-top:6px;
+}
+
+.relays{
+  display:flex;
+  gap:14px;
+  margin-top:24px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+footer{
+  margin:40px 0 20px;
+  font-size:14px;
+  color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="logo.png" alt="IXH logo">
+</header>
+
+<div class="card">
+
+  <div class="time" id="clock">--:--:--</div>
+
+  <!-- MODE -->
+  <div class="row">
+    <div class="btn active" id="btnAuto">AUTO</div>
+    <div class="btn" id="btnManual">MANUAL</div>
+  </div>
+
+  <!-- SETPOINT -->
+  <div class="section">
+    <div class="label">Temperatura zadana</div>
+    <div class="setpoint">
+      <button onclick="adj(-0.5)">–</button>
+      <span id="tzad">21.0 °C</span>
+      <button onclick="adj(0.5)">+</button>
+    </div>
+  </div>
+
+  <!-- TEMPERATURES -->
+  <div class="section temps">
+    <div class="temp"><div class="name">Nawiew</div><div class="val" id="tN">21.5 °C</div></div>
+    <div class="temp"><div class="name">Wywiew</div><div class="val" id="tW">22.1 °C</div></div>
+    <div class="temp"><div class="name">CT</div><div class="val" id="tC">31.9 °C</div></div>
+    <div class="temp"><div class="name">Zewnętrzna</div><div class="val" id="tO">4.2 °C</div></div>
+  </div>
+
+  <!-- RELAYS -->
+  <div class="section relays">
+    <div class="btn active" id="r1">Start HV</div>
+    <div class="btn" id="r2">Start PC</div>
+    <div class="btn" id="r3">Pompa CT</div>
+  </div>
+
+</div>
+
+<footer>
+  IXH-Polska<br>
+  ixh@linuxmail.org | +48 578 424 942
+</footer>
+
+<script>
+/* ===== MOCK STATE ===== */
+let state = {
+  mode:'AUTO',
+  tZad:21.0,
+  tN:21.5,
+  tW:22.1,
+  tC:31.9,
+  tO:4.2,
+  r1:true,
+  r2:false,
+  r3:false
+};
+
+/* CLOCK */
+setInterval(()=>{
+  const d=new Date();
+  clock.innerHTML=d.toLocaleTimeString('pl-PL');
+},1000);
+
+/* MODE */
+btnAuto.onclick=()=>setMode('AUTO');
+btnManual.onclick=()=>setMode('MANUAL');
+
+function setMode(m){
+  state.mode=m;
+  btnAuto.classList.toggle('active',m==='AUTO');
+  btnManual.classList.toggle('active',m==='MANUAL');
+}
+
+/* SETPOINT */
+function adj(v){
+  state.tZad=Math.min(30,Math.max(18,state.tZad+v));
+  render();
+}
+
+/* RENDER */
+function render(){
+  tzad.innerHTML=state.tZad.toFixed(1)+' °C';
+  tN.innerHTML=state.tN+' °C';
+  tW.innerHTML=state.tW+' °C';
+  tC.innerHTML=state.tC+' °C';
+  tO.innerHTML=state.tO+' °C';
+
+  r1.classList.toggle('active',state.r1);
+  r2.classList.toggle('active',state.r2);
+  r3.classList.toggle('active',state.r3);
+}
+
+render();
+</script>
+
+</body>
+</html>
